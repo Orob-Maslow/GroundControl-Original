@@ -4,12 +4,13 @@ from kivy.uix.behaviors       import ButtonBehavior
 from kivy.uix.floatlayout     import FloatLayout
 
 class ButtonTemplate(FloatLayout, ButtonBehavior):
+    
     btnBackground        = StringProperty('atlas://data/images/defaulttheme/button')
     btnBackgroundDown    = StringProperty('atlas://data/images/defaulttheme/button_pressed')
     funcToCallOnPress    = ObjectProperty(None)
     funcToCallOnRelease  = ObjectProperty(None)
     text                 = StringProperty("")
-    textColor            = StringProperty('[color=7a7a7a]')
+    textColor            = StringProperty('[color=111111]')
     
     
     def internal_on_press(self, *args):
@@ -19,7 +20,7 @@ class ButtonTemplate(FloatLayout, ButtonBehavior):
         
         '''
         
-        if self.funcToCallOnPress is not None:
+        if self.funcToCallOnPress != None:
             self.funcToCallOnPress()
         
         
@@ -30,5 +31,5 @@ class ButtonTemplate(FloatLayout, ButtonBehavior):
         
         '''
         
-        if self.funcToCallOnRelease is not None:
+        if self.funcToCallOnRelease != None:
             self.funcToCallOnRelease()

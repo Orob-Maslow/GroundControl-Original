@@ -5,7 +5,7 @@ The widget which requests a guess for the rotation radius
 '''
 from   kivy.uix.gridlayout                          import   GridLayout
 from   kivy.properties                              import   ObjectProperty
-from   UIElements.touchNumberInput                  import   TouchNumberInput
+from   uielements.touchNumberInput                  import   TouchNumberInput
 from   kivy.uix.popup                               import   Popup
 from   kivy.app                                     import   App
 import global_variables
@@ -28,7 +28,8 @@ class RotationRadiusGuess(GridLayout):
         self.popupContent = TouchNumberInput(done=self.dismiss_popup, data = self.data)
         self.popupContent.forceUnitsMM()
         self._popup = Popup(title="Set rotation radius", content=self.popupContent,
-                            size_hint=(0.9, 0.9))
+                            size_hint=(0.9, 0.9)
+                            )
         self._popup.open()
         if global_variables._keyboard:
             global_variables._keyboard.bind(on_key_down=self.keydown_popup)
@@ -83,8 +84,8 @@ class RotationRadiusGuess(GridLayout):
         try:
             dist = float(self.enterMeasurement.text)
             self.data.config.set('Advanced Settings', 'rotationRadius', str(dist))
-            print "setting rotation radius to: " + str(dist)
-            print self.data.config.get('Advanced Settings', 'rotationRadius')
+            print ("setting rotation radius to: ") + str(dist)
+            print (self.data.config.get('Advanced Settings', 'rotationRadius'))
             self.readyToMoveOn()
         except:
             self.data.message_queue.put("Message: Couldn't convert that to a number...")

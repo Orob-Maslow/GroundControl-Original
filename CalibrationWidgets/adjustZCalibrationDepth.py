@@ -1,8 +1,8 @@
 from   kivy.uix.gridlayout                      import   GridLayout
 from   kivy.properties                          import   ObjectProperty
-from   UIElements.touchNumberInput              import   TouchNumberInput
+from   uielements.touchNumberInput              import   TouchNumberInput
 from   kivy.uix.popup                           import   Popup
-from UIElements.zAxisPopupContent               import ZAxisPopupContent
+from   uielements.zAxisPopupContent             import   ZAxisPopupContent
 from   kivy.app                                 import   App
 
 class AdjustZCalibrationDepth(GridLayout):
@@ -46,8 +46,12 @@ class AdjustZCalibrationDepth(GridLayout):
         self.popupContent      = ZAxisPopupContent(done=self.dismissZAxisPopup)
         self.popupContent.data = self.data
         self.popupContent.initialize()
-        self._zpopup = Popup(title="Z-Axis", content=self.popupContent,
-                            size_hint=(0.5, 0.5))
+        self._zpopup = Popup(title="Z-Axis",
+                            content=self.popupContent,
+                            size_hint=(0.5, 0.5),
+                            background_color=(1, 1, 1, 0.7),
+                            background='[color=cccccc]'
+                            )
         self._zpopup.open()
     
     def dismissZAxisPopup(self):

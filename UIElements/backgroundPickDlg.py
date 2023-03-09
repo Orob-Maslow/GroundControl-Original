@@ -1,6 +1,6 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.properties import StringProperty, ListProperty, ObjectProperty
-from DataStructures.makesmithInitFuncs import MakesmithInitFuncs
+from datastructures.makesmithInitFuncs import MakesmithInitFuncs
 from kivy.vector import Vector
 
 
@@ -20,7 +20,7 @@ class BackgroundPickDlg(GridLayout, MakesmithInitFuncs):
         self.update()
 
     def update(self, *args):
-        if self.imWidg.size[0] is not 100 and self.imWidg.size[1] is not 100:
+        if self.imWidg.size[0] != 100 and self.imWidg.size[1] != 100:
             # Widget is stable, update the textures bounds
             self.w, self.h = self.imWidg.size
             self.coeff_size = [self.w, self.h, self.w, self.h,
@@ -45,12 +45,12 @@ class BackgroundPickDlg(GridLayout, MakesmithInitFuncs):
         i = 0
         for (p, s) in zip(self.coeff_size, self.tex_selection):
             if i % 2:  # y coord
-                if p is not 0:
+                if p != 0:
                     coeffs.append(float(s - padOffy) / float(p))
                 else:
                     coeffs.append(0.0 - padOffy)
             else:  # x coord
-                if p is not 0:
+                if p != 0:
                     coeffs.append(float(s - padOffx) / float(p))
                 else:
                     coeffs.append(0.0 - padOffx)
@@ -72,17 +72,17 @@ class BackgroundPickDlg(GridLayout, MakesmithInitFuncs):
         return super(BackgroundPickDlg, self).on_touch_down(touch)
 
     def on_touch_move(self, touch):
-        if touch.grab_current is not self:
+        if touch.grab_current != self:
             return super(BackgroundPickDlg, self).on_touch_move(touch)
 
         tex = touch.ud.get('tex')
 
-        if tex is not None:
+        if tex != None:
             self.tex_selection[tex * 2] = touch.x
             self.tex_selection[tex * 2 + 1] = touch.y
 
     def on_touch_up(self, touch):
-        if touch.grab_current is self:
+        if touch.grab_current == self:
             touch.ungrab(self)
         else:
             return super(BackgroundPickDlg, self).on_touch_up(touch)

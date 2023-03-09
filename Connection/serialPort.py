@@ -1,11 +1,15 @@
 from kivy.properties                           import  ListProperty
 from kivy.clock                                import  Clock
-from DataStructures.makesmithInitFuncs         import  MakesmithInitFuncs
-from Connection.serialPortThread               import  SerialPortThread
-
+from datastructures.makesmithInitFuncs         import  MakesmithInitFuncs
+from connection.serialPortThread               import  SerialPortThread
 import sys
 import serial
-import serial.tools.list_ports
+# chose an implementation, depending on os
+if sys.platform.startswith('darwin'):
+     import serial.tools.list_ports_osx
+else:
+    import serial.tools.list_ports
+    
 import threading
 
 class SerialPort(MakesmithInitFuncs):
@@ -18,7 +22,7 @@ class SerialPort(MakesmithInitFuncs):
     '''
     
     
-    # COMports = ListProperty(("Available Ports:", "None"))
+    
     
     def __init__(self):
         '''
@@ -34,8 +38,8 @@ class SerialPort(MakesmithInitFuncs):
         Defines which port the machine is attached to
         
         '''
-        print "update ports"
-        print port
+        print ("update ports")
+        print (port)
         self.data.comport = port
     
     def connect(self, *args):
@@ -46,7 +50,7 @@ class SerialPort(MakesmithInitFuncs):
         This function may not be necessary, but it should stay in because it simplifies the user experience.
         
         '''
-        self.data.config.set('Makesmith Settings', 'COMport', str(self.data.comport))
+        self.data.config.set('Maslow Settings', 'COMport', str(self.data.comport))
         
     '''
     
@@ -58,12 +62,14 @@ class SerialPort(MakesmithInitFuncs):
         #This function opens the thread which handles the input from the serial port
         #It only needs to be run once, it is run by connecting to the machine
         
-        
-        if not self.data.connectionStatus:
-            #self.data.message_queue is the queue which handles passing CAN messages between threads
-            x = SerialPortThread()
-            x.setUpData(self.data)
-            self.th=threading.Thread(target=x.getmessage)
-            self.th.daemon = True
-            self.th.start()
+        try:
+            if not self.data.connectionStatus:
+                #self.data.message_queue is the queue which handles passing CAN messages between threads
+                x = SerialPortThread()
+                x.setUpData(self.data)
+                self.th=threading.Thread(target=x.getmessage)
+                self.th.daemon = True
+                self.th.start()
+        except:
+            pass
     

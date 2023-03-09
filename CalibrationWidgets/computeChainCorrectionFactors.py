@@ -1,7 +1,7 @@
 from   kivy.uix.gridlayout                import   GridLayout
 from   kivy.properties                    import   ObjectProperty
 from   kivy.properties                    import   StringProperty
-from   UIElements.touchNumberInput        import   TouchNumberInput
+from   uielements.touchNumberInput        import   TouchNumberInput
 from   kivy.uix.popup                     import   Popup
 from   kivy.app                           import   App
 import global_variables

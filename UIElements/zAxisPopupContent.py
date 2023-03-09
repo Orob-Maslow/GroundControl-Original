@@ -6,7 +6,7 @@ This allows the user interact with the z-axis when it is the content of a popup
 from   kivy.uix.gridlayout                       import   GridLayout
 from   kivy.properties                           import   ObjectProperty
 from   kivy.properties                           import   StringProperty
-from   UIElements.touchNumberInput               import   TouchNumberInput
+from   uielements.touchNumberInput               import   TouchNumberInput
 from   kivy.uix.popup                            import   Popup
 
 class ZAxisPopupContent(GridLayout):
@@ -23,15 +23,15 @@ class ZAxisPopupContent(GridLayout):
         
         '''
         self.onEntryUnits= self.data.units
-        if self.data.zPopupUnits is None:
+        if self.data.zPopupUnits == None:
             self.data.zPopupUnits = self.data.units
         self.unitsBtn.text = self.data.zPopupUnits
-        if self.data.zPush is not None:
+        if self.data.zPush != None:
             self.zCutLabel = "Re-Plunge to\n"+'%.3f '%(self.data.zPush)+self.data.zPushUnits[:2]
             self.zPopDisable=False
             
     def setMachineUnits(self, units=None):
-        if units is None:
+        if units == None:
             units = self.data.zPopupUnits
             
         self.data.units = units #Show the right units on the main screen
@@ -50,14 +50,14 @@ class ZAxisPopupContent(GridLayout):
     def setDist(self):
         self.popupContent = TouchNumberInput(done=self.dismiss_popup, data = self.data)
         self._popup = Popup(title="Change increment size of machine movement", content=self.popupContent,
-                            size_hint=(0.9, 0.9))
+                            size_hint=(0.5, 0.5), background_color=(1, 1, 1, 0.7), background='[color=cccccc]')
         self._popup.open()
     
     
     def units(self):
         '''
         Toggle the dialog units.
-        '''
+        ''' 
         if self.data.zPopupUnits == "INCHES":
             self.data.zPopupUnits = "MM"
             self.data.zStepSizeVal=25.4*float(self.distBtn.text)
@@ -67,6 +67,31 @@ class ZAxisPopupContent(GridLayout):
         
         self.distBtn.text = "%.3f"%self.data.zStepSizeVal
         self.unitsBtn.text = self.data.zPopupUnits
+
+
+    def zUpperLimit(self):
+        '''
+        Z-axis Soft limit (upper)
+        '''
+        self.setMachineUnits()
+        self.data.gcode_queue.put("B17")
+        self.resetMachineUnits()
+
+    def zLowerLimit(self):
+        '''
+        Z-axis Soft limit (lower)
+        '''
+        self.setMachineUnits()
+        self.data.gcode_queue.put("B18")
+        self.resetMachineUnits()        
+
+    def zClearLimit(self):
+        '''
+        Z-axis Soft limit (clear)
+        '''
+        self.setMachineUnits()
+        self.data.gcode_queue.put("B19")
+        self.resetMachineUnits()
     
     def goThere(self):
         '''
@@ -105,7 +130,7 @@ class ZAxisPopupContent(GridLayout):
         
         self.setMachineUnits()
         safeHeightMM = float(self.data.config.get('Maslow Settings', 'zAxisSafeHeight'))
-        safeHeightInches = safeHeightMM / 25.5
+        safeHeightInches = safeHeightMM / 25.4
         if self.data.units == "INCHES":
             self.data.gcode_queue.put("G00 Z" + '%.3f'%(safeHeightInches))
         else:
@@ -139,9 +164,8 @@ class ZAxisPopupContent(GridLayout):
         Probe for Zero Z
         '''
         self.setMachineUnits()
-	plungeDepth = self.data.config.get('Advanced Settings', 'maxTouchProbePlungeDistance')
-
-        if self.data.units == "INCHES":
+        plungeDepth = self.data.config.get('Maslow Settings', 'maxTouchProbePlungeDistance')
+        if  self.data.units == "INCHES":
             self.data.gcode_queue.put("G20 G90 G38.2 Z-" + plungeDepth + " F1 G20 G90 M02")   
         else:
             self.data.gcode_queue.put("G21 G90 G38.2 Z-" + plungeDepth + " F1 G21 G90 M02")  
@@ -168,7 +192,7 @@ class ZAxisPopupContent(GridLayout):
             self.data.zStepSizeVal=tempfloat  # Update displayed text using standard numeric format
             self.distBtn.text = "%.3f"%tempfloat
         except ValueError:
-            pass                                                             #If what was entered cannot be converted to a number, leave the value the same
+            pass                           #If what was entered cannot be converted to a number, leave the value the same
         self._popup.dismiss()
         
     def close(self):

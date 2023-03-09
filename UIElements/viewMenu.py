@@ -1,12 +1,10 @@
 from   kivy.uix.gridlayout                       import   GridLayout
-from   UIElements.fileBrowser                    import   FileBrowser
-from   UIElements.pageableTextPopup              import   PageableTextPopup
+from   uielements.fileBrowser                    import   FileBrowser
+from   uielements.pageableTextPopup              import   PageableTextPopup
 from   kivy.uix.popup                            import   Popup
 import re
-from DataStructures.makesmithInitFuncs           import MakesmithInitFuncs
-from os                                          import    path
-
-
+from   datastructures.makesmithInitFuncs         import   MakesmithInitFuncs
+from   os                                        import   path
 
 
 
@@ -24,7 +22,7 @@ class ViewMenu(GridLayout, MakesmithInitFuncs):
         '''
         #starting path is either where the last opened file was or the users home directory
         startingPath = path.dirname(self.data.gcodeFile)
-        if startingPath is "": 
+        if startingPath == "": 
             startingPath = path.expanduser('~')
         
         #We want to filter to show only files that ground control can open
@@ -42,9 +40,13 @@ class ViewMenu(GridLayout, MakesmithInitFuncs):
                          on_submit=self.load)
         
         #load=self.load, cancel=self.dismiss_popup
-        
-        self._popup = Popup(title="Load file", content=content,
-                            size_hint=(0.9, 0.9))
+        self._popup = Popup(title="Load file",
+                            content=content,
+                            title_color=(0,0,0,1),
+                            size_hint=(0.9, .9),
+                            background_color=(0, 0, 0, .4),
+                            background='[color=cccccc]'
+                            )
         self._popup.open()
     
     def clear_gcode(self):
@@ -131,7 +133,7 @@ class ViewMenu(GridLayout, MakesmithInitFuncs):
         
         popupText = ""
         titleString = "Gcode File"
-        if len(self.data.gcode) is 0:
+        if len(self.data.gcode) == 0:
             popupText = "No gcode to display"
         else:
             if self.page<=1:
@@ -157,8 +159,13 @@ class ViewMenu(GridLayout, MakesmithInitFuncs):
                                       next = self.show_gcode_next,
                                       text = popupText)
 
-        self._popup = Popup(title=titleString, content=content,
-                            size_hint=(0.9, 0.9))
+        self._popup = Popup(title=titleString,
+                            content=content,
+                            title_color=(0,0,0,1),
+                            background_color=(0, 0, 0, 0.7),
+                            background='[color=cccccc]',
+                            size_hint=(0.9, 0.9)
+                            )
         self._popup.open()
 
     def show_gcode_next(self,*args):

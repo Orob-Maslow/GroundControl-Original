@@ -1,7 +1,7 @@
 from   kivy.uix.gridlayout                import   GridLayout
 from   kivy.properties                    import   ObjectProperty
 from   kivy.properties                    import   StringProperty
-from   UIElements.touchNumberInput        import   TouchNumberInput
+from   uielements.touchNumberInput        import   TouchNumberInput
 from   kivy.uix.popup                     import   Popup
 from   kivy.app                           import   App
 import global_variables
@@ -41,8 +41,8 @@ class TriangularCalibration(GridLayout):
 
         self.data.gcode_queue.put("G91 ") # Switch to relative mode
 
-        self.data.gcode_queue.put("M3 ") # Turn on the spindle
-
+        self.data.gcode_queue.put("M3 S25000 ") # Turn on the spindle and set RPM - RPM limited to MAX RPM in Maslow setings - default 10.000
+ 
         self.data.gcode_queue.put("G0 X-" + str((workspaceWidth/2)-254) + " Y+" + str((workspaceHeight/2)-241.3) + " ")  # Move to first cut point
         self.data.gcode_queue.put("G1 Z-7 F500 ")
         self.data.gcode_queue.put("G1 Y-25.4 ") # Cut 25.4mm vertical mark
@@ -219,8 +219,8 @@ class TriangularCalibration(GridLayout):
 
         # Set up the iterative algorithm
 
-        print "Previous machine parameters:"
-        print "Motor Spacing: " + str(motorSpacing) + ", Motor Y Offset: " + str(motorYoffsetEst) + ", Rotation Disk Radius: " + str(rotationRadiusEst) + ", Chain Sag Correction Value: " + str(chainSagCorrectionEst)
+        print ("Previous machine parameters:")
+        print ("Motor Spacing: " + str(motorSpacing) + ", Motor Y Offset: " + str(motorYoffsetEst) + ", Rotation Disk Radius: " + str(rotationRadiusEst) + ", Chain Sag Correction Value: " + str(chainSagCorrectionEst))
 
         motorYcoordEst = distWorkareaTopToCut5 + (bitDiameter / 2) + 12.7
         rotationRadiusEst = 0
@@ -232,7 +232,7 @@ class TriangularCalibration(GridLayout):
         ChainErrorCut4 = acceptableTolerance
         n = 0
 
-        print "Iterating for new machine parameters"
+        print ("Iterating for new machine parameters")
 
         # Iterate until error tolerance is achieved or maximum number of iterations occurs
 
@@ -303,8 +303,8 @@ class TriangularCalibration(GridLayout):
 
             motorYoffsetEstPrint = motorYcoordEst - distWorkareaTopToCut5 - (bitDiameter / 2) - 12.7
 
-            print "N: " + str(n) + ", Motor Spacing: " + str(round(motorSpacing, 3)) + ", Motor Y Offset: " + str(round(motorYoffsetEstPrint, 3)) + ", Rotation Disk Radius: " + str(round(rotationRadiusEst, 3)) + ", Chain Sag Correction Value: " + str(round(chainSagCorrectionEst, 6))
-            print "  Chain Error Cut 1: " + str(round(ChainErrorCut1,4)) + ", Chain Error Cut 2: " + str(round(ChainErrorCut2,4)) + ", Chain Error Cut 3: " + str(round(ChainErrorCut3,4)) + ", Chain Error Cut 4: " + str(round(ChainErrorCut4,4)) + ", Sled Drift Compensation: " + str(round(cut34YoffsetEst, 4))
+            print ("N: " + str(n) + ", Motor Spacing: " + str(round(motorSpacing, 3)) + ", Motor Y Offset: " + str(round(motorYoffsetEstPrint, 3)) + ", Rotation Disk Radius: " + str(round(rotationRadiusEst, 3)) + ", Chain Sag Correction Value: " + str(round(chainSagCorrectionEst, 6)))
+            print ("  Chain Error Cut 1: " + str(round(ChainErrorCut1,4)) + ", Chain Error Cut 2: " + str(round(ChainErrorCut2,4)) + ", Chain Error Cut 3: " + str(round(ChainErrorCut3,4)) + ", Chain Error Cut 4: " + str(round(ChainErrorCut4,4)) + ", Sled Drift Compensation: " + str(round(cut34YoffsetEst, 4)))
 
             # Update the motorYcoord and rotationRadius parameters based on the current chain length errors
 
@@ -332,11 +332,11 @@ class TriangularCalibration(GridLayout):
                     rotationRadiusCorrectionScale = float(rotationRadiusCorrectionScale/2)
                     chainSagCorrectionCorrectionScale = float(chainSagCorrectionCorrectionScale/2)
                     cutYoffsetCorrectionScale = float(cutYoffsetCorrectionScale/2)
-                    print "Estimated values out of range, trying again with smaller steps"
+                    print ("Estimated values out of range, trying again with smaller steps")
 
         if n == numberOfIterations:
             self.data.message_queue.put('Message: The machine was not able to be calibrated. Please ensure the work area dimensions are correct and try again.')
-            print "Machine parameters could not be determined"
+            print ("Machine parameters could not be determined")
 
             return
 
@@ -345,7 +345,7 @@ class TriangularCalibration(GridLayout):
         self.vertMeasureT1.disabled = True
         self.enterValuesT.disabled = True
 
-        print "Machine parameters found:"
+        print ("Machine parameters found:")
 
         motorYoffsetEst = motorYcoordEst - distWorkareaTopToCut5 - (bitDiameter / 2) - 12.7
 
@@ -353,7 +353,7 @@ class TriangularCalibration(GridLayout):
         rotationRadiusEst = round(rotationRadiusEst, 1)
         chainSagCorrectionEst = round(chainSagCorrectionEst, 6)
 
-        print "Motor Spacing: " + str(motorSpacing) + ", Motor Y Offset: " + str(motorYoffsetEst) + ", Rotation Disk Radius: " + str(rotationRadiusEst) + ", Chain Sag Correction Value: " + str(chainSagCorrectionEst)
+        print ("Motor Spacing: " + str(motorSpacing) + ", Motor Y Offset: " + str(motorYoffsetEst) + ", Rotation Disk Radius: " + str(rotationRadiusEst) + ", Chain Sag Correction Value: " + str(chainSagCorrectionEst))
 
         # Update machine parameters
 

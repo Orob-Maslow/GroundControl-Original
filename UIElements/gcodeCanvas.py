@@ -1,28 +1,20 @@
-'''
-
-This module provides a UI element which can display gcode on a Kivy canvas element. It also provides panning 
-and zooming features. It was not originally written as a stand alone module which might create some weirdness.
-
-'''
 
 from kivy.uix.floatlayout                    import FloatLayout
-from kivy.properties                         import NumericProperty, ObjectProperty
-from kivy.graphics                           import Color, Ellipse, Line, Point
+from kivy.graphics                           import Color, Line
 from kivy.clock                              import Clock
-from DataStructures.makesmithInitFuncs       import MakesmithInitFuncs
-from UIElements.positionIndicator            import PositionIndicator
-from UIElements.viewMenu                     import ViewMenu
+from datastructures.makesmithInitFuncs       import MakesmithInitFuncs
+from uielements.positionIndicator            import PositionIndicator
+from uielements.viewMenu                     import ViewMenu
 from kivy.graphics.transformation            import Matrix
 from kivy.core.window                        import Window
-from UIElements.modernMenu                   import ModernMenu
+from uielements.modernMenu                   import ModernMenu
 from kivy.metrics                            import dp
-from kivy.graphics.texture                   import Texture
 from kivy.graphics                           import Rectangle
 
 import re
 import math
 import global_variables
-import sys
+import sys 
 
 class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
     
@@ -33,6 +25,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
     xPosition = 0
     yPosition = 0
     zPosition = 0
+    trte = 4
     
     lineNumber = 0  #the line number currently being processed
     
@@ -41,7 +34,6 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
     prependString = "G01 "
     
     maxNumberOfLinesToRead = 300000
-    
     
     
     def initialize(self):
@@ -91,8 +83,6 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         scaleFactor = .03
         anchor = (0,0)
         
-#         print 'gcodeCanvas',keycode, text, modifiers  # handy for exploring keyboard input
-        
         if keycode[1] == self.data.config.get('Ground Control Settings', 'zoomIn'):
             mat = Matrix().scale(1-scaleFactor, 1-scaleFactor, 1)
             self.scatterInstance.apply_transform(mat, anchor)
@@ -101,33 +91,8 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             mat = Matrix().scale(1+scaleFactor, 1+scaleFactor, 1)
             self.scatterInstance.apply_transform(mat, anchor)
             return True # we handled this key - don't pass to other callbacks
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'runKey'):
-            self.parent.startRun() # "click" the 'Run' button
-            return True # we handled this key - don't pass to other callbacks
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'pauseKey'):
-            self.parent.pause() # "click" the 'Pause' button
-            return True # we handled this key - don't pass to other callbacks
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'stopKey'):
-            self.parent.stopRun() # "click" the 'Stop' button
-            return True # we handled this key - don't pass to other callbacks
-#         elif keycode[1] == self.data.config.get('Ground Control Settings', 'fakeServo_Off'):
-#             if self.data.config.get('Ground Control Settings', 'fsModeAllowed') == "Allowed":
-#                 if 'ctrl' in modifiers or 'alt' in modifiers or 'meta' in modifiers:
-#                     self.data.gcode_queue.put("B99 ON \n")
-#                 else:
-#                     self.data.gcode_queue.put("B99 OFF \n")
-#                 return True # we handled this key - don't pass to other callbacks
-#             else:
-#                 return False # we didn't handle this key - let next callback handle it
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'fakeServo_Off'):
-            if 'ctrl' in modifiers or 'alt' in modifiers or 'meta' in modifiers:
-                if self.data.config.get('Ground Control Settings', 'fsModeAllowed') == "Allowed":
-                    self.data.gcode_queue.put("B99 ON \n")
-            else:
-                self.data.gcode_queue.put("B99 OFF \n")
-            return True # we handled this key - don't pass to other callbacks
         else:
-                return False # we didn't handle this key - let next callback handle it
+            return False # we didn't handle this key - let next callback handle it
 
     def isClose(self, a, b):
         return abs(a-b) <= self.data.tolerance
@@ -144,7 +109,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         '''
         
         filename = self.data.gcodeFile
-        if filename is "": #Blank the g-code if we're loading "nothing"
+        if filename == "": #Blank the g-code if we're loading "nothing"
             self.data.gcode = " "
             self.data.gcode = ""
             return
@@ -200,7 +165,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         Return the canvas to the center of the screen.
         
         '''
-        mat = Matrix().translate(Window.width/2, Window.height/2, 0)
+        mat = Matrix().translate(Window.width/2.5, Window.height/2, 0)
         self.scatterInstance.transform = mat
         
         anchor = (0,0)
@@ -247,12 +212,12 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             Line(points = (0, -height/2,0,height/2), dash_offset = 5, group='workspace')
     
             texture = self.data.backgroundTexture
-            if texture is not None:
+            if texture != None:
                 Rectangle(texture=texture, pos=(-width/2, -height/2), 
                           size=(width, height),
                           tex_coords=self.data.backgroundManualReg)
 
-    def drawLine(self,gCodeLine,command):
+    def drawLine(self, gCodeLine, command):
         '''
         
         drawLine draws a line using the previous command as the start point and the xy coordinates
@@ -314,7 +279,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             self.yPosition = yTarget
             self.zPosition = zTarget
         except:
-            print "Unable to draw line on screen: " + gCodeLine
+            print ("Unable to draw line on screen: " + gCodeLine)
     
     def drawArc(self,gCodeLine,command):
         '''
@@ -385,7 +350,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             self.xPosition = xTarget
             self.yPosition = yTarget
         except:
-            print "Unable to draw arc on screen: " + gCodeLine
+            print ("Unable to draw arc on screen: " + gCodeLine)
 
     def clearGcode(self):
         '''
@@ -393,7 +358,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         clearGcode deletes the lines and arcs corresponding to gcode commands from the canvas. 
     
         '''
-        self.scatterObject.canvas.clear()#remove_group('gcode')
+        self.scatterObject.canvas.clear() #remove_group('gcode')
         
         self.drawWorkspace()
     
@@ -464,35 +429,58 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
     def moveLine(self, gCodeLine):
         
         originalLine = gCodeLine
-        
-        try:
-            gCodeLine = gCodeLine.upper() + " "
-            x = re.search("X(?=.)(([ ]*)?[+-]?([0-9]*)(\.([0-9]+))?)", gCodeLine)
-            if x:
-#                 xTarget = '%f' % (float(x.groups()[0]) + self.data.gcodeShift[0]) # not used any more...
-                eNtnX = re.sub('\-?\d\.|\d*e-','',str(abs(float(x.groups()[0]) + self.data.gcodeShift[0]))) # strip off everything but the decimal part or e-notation exponent
-                e = re.search(".*e-", str(abs(float(x.groups()[0]) + self.data.gcodeShift[0])))
-                if e:
-                    fmtX = "%0%.%sf" % eNtnX  # if e-notation, use the exponent from the e notation
-                else:
-                    fmtX = "%0%.%sf" % len(eNtnX) # use the number of digits after the decimal place
-                gCodeLine = gCodeLine[0:x.start()+1] + (fmtX % (float(x.groups()[0]) + self.data.gcodeShift[0])) + gCodeLine[x.end():]
-            
-            y = re.search("Y(?=.)(([ ]*)?[+-]?([0-9]*)(\.([0-9]+))?)", gCodeLine)
-            if y:
-#                 yTarget = '%f' % (float(y.groups()[0]) + self.data.gcodeShift[1]) # not used any more...
-                eNtnY = re.sub('\-?\d\.|\d*e-','',str(abs(float(y.groups()[0]) + self.data.gcodeShift[1])))
-                e = re.search(".*e-", str(abs(float(y.groups()[0]) + self.data.gcodeShift[1])))
-                if e:
-                    fmtY = "%0%.%sf" % eNtnY
-                else:
-                    fmtY = "%0%.%sf" % len(eNtnY)
-                gCodeLine = gCodeLine[0:y.start()+1] + (fmtY % (float(y.groups()[0]) + self.data.gcodeShift[1])) + gCodeLine[y.end():]
-            
-            return gCodeLine
-        except ValueError:
-            print "line could not be moved:"
-            print originalLine
+        shiftX = self.data.gcodeShift[0]
+        shiftY = self.data.gcodeShift[1]
+        if len(gCodeLine) > 0:
+            if gCodeLine[0] == '(' or gCodeLine[0] == ';':
+                return originalLine
+        findexA = gCodeLine.find('(')
+        findexB = gCodeLine.find(';')
+        if findexA != -1 and findexA < findexB:
+            findex = findexA
+        else:
+            findex = findexB
+        comment = ""
+        if findex != -1:
+            comment = gCodeLine[findex:]
+            gCodeLine = gCodeLine[:findex]
+
+        if True:
+            try:
+                gCodeLine = gCodeLine.upper() + " "
+                x = re.search("X(?=.)(([ ]*)?[+-]?([0-9]*)(\\.([0-9]+))?)", gCodeLine)
+                if x:
+                    q = abs(float(x.groups()[0])+shiftX)
+                    if self.trte >= 0:
+                        q = str(round(q, self.trte))
+                    else:
+                        q = str(q)
+                    eNtnX = re.sub("\\-?\\d\\.|\\d*e-","",q,)  # strip off everything but the decimal part or e-notation exponent
+                    e = re.search(".*e-", q)
+                    if e:
+                        fmtX = "%0.{0}f".format(eNtnX)
+                    else:
+                        fmtX = "%0.{0}f".format(len(eNtnX))
+                    gCodeLine = gCodeLine[0 : x.start() + 1] + (fmtX % (float(x.groups()[0]) + shiftX)) + gCodeLine[x.end() :]
+                y = re.search("Y(?=.)(([ ]*)?[+-]?([0-9]*)(\\.([0-9]+))?)", gCodeLine)
+                if y:
+                    q = abs(float(y.groups()[0])+shiftY)
+                    if self.trte >= 0:
+                        q = str(round(q, self.trte))
+                    else:
+                        q = str(q)
+                    eNtnY = re.sub("\\-?\\d\\.|\\d*e-", "", q,)
+                    e = re.search(".*e-", q)
+                    if e:
+                        fmtY = "%0.{0}f".format(eNtnY)
+                    else:
+                        fmtY = "%0.{0}f".format(len(eNtnY))
+                    gCodeLine = gCodeLine[0 : y.start() + 1] + (fmtY % (float(y.groups()[0]) + shiftY)) + gCodeLine[y.end() :]
+                gCodeLine = gCodeLine + comment
+                return gCodeLine
+            except ValueError:
+                self.data.console_queue.put("line could not be moved:")
+                self.data.console_queue.put(originalLine)
             return originalLine
     
     def loadNextLine(self):
@@ -557,7 +545,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             pass
         
         if gString == 'G18':
-            print "G18 not supported"
+            print ("G18 not supported")
         
         if gString == 'G20':
             self.canvasScaleFactor = self.INCHES
@@ -615,8 +603,6 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         #Check to see if file is too large to load
         if len(self.data.gcode) > self.maxNumberOfLinesToRead:
             errorText = "The current file contains " + str(len(self.data.gcode)) + " lines of gcode.\nrendering all " +  str(len(self.data.gcode)) + " lines simultaneously may crash the\n program, only the first " + self.maxNumberOfLinesToRead + "lines are shown here.\nThe complete program will cut if you choose to do so unless the home position is moved from (0,0)."
-            print errorText
+            print (errorText)
             self.data.message_queue.put("Message: " + errorText)
-        
         self.callBackMechanism(self.updateGcode)
-        

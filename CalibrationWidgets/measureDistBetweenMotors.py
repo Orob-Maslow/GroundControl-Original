@@ -1,6 +1,6 @@
 from   kivy.uix.gridlayout                  import  GridLayout
 from   kivy.properties                      import   ObjectProperty
-from   UIElements.touchNumberInput          import   TouchNumberInput
+from   uielements.touchNumberInput          import   TouchNumberInput
 from   kivy.uix.popup                       import   Popup
 from   kivy.app                             import   App
 import global_variables
@@ -93,7 +93,7 @@ class MeasureDistBetweenMotors(GridLayout):
     def readMotorSpacing(self, dist):
         dist = dist - 2*6.35                                #subtract off the extra two links
 
-        print "Read motor spacing: " + str(dist)
+        print ("Read motor spacing: ") + str(dist)
         self.data.config.set('Maslow Settings', 'motorSpacingX', str(dist))
         
         #put some slack in the chain

@@ -9,7 +9,7 @@ class ScrollableLabel(ScrollView):
     the text will wrap, and if it is taller than the label, a scroll bar will be added
     
     '''
-    text = StringProperty('')
+    text = StringProperty("")
     
     def gotToBottom(self):
         '''

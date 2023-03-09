@@ -4,16 +4,16 @@ This allows the user to touch or keyboard input a number when it is the content 
 
 '''
 from   kivy.uix.gridlayout                       import   GridLayout
-from   kivy.properties                           import   ObjectProperty
-from   kivy.properties                           import   StringProperty
-import global_variables
+from   kivy.properties                           import   ObjectProperty, StringProperty
+import  global_variables
 
 class TouchNumberInput(GridLayout):
     done   = ObjectProperty(None)
     
     def __init__(self,**kwargs):
         self.data = kwargs.get('data')
-        super(TouchNumberInput,self).__init__(**kwargs)
+        self.done = kwargs.get('done')
+        super().__init__()
         
         self.unitsBtn.text = self.data.units
         

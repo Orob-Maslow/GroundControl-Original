@@ -1,6 +1,4 @@
-from DataStructures.makesmithInitFuncs     import MakesmithInitFuncs
 from kivy.uix.widget                       import Widget
-from kivy.graphics                         import Color
 from kivy.properties                       import ObjectProperty
 from kivy.properties                       import NumericProperty
 

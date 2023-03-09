@@ -59,25 +59,24 @@ a shortcut to the Documents directory added to the favorites bar::
 __all__ = ('FileBrowser', )
 __version__ = '1.1-dev'
 
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.treeview import TreeViewLabel, TreeView
-from kivy.uix.filechooser import FileChooserIconView as IconView
+from kivy.uix.boxlayout         import BoxLayout
+from kivy.uix.treeview          import TreeViewLabel, TreeView
+from kivy.uix.filechooser       import FileChooserIconView as IconView
 try:
     from kivy.garden.filechooserthumbview import FileChooserThumbView as\
-    IconView
+IconView
 except:
     pass
-from kivy.properties import (ObjectProperty, StringProperty, OptionProperty,
-                             ListProperty, BooleanProperty)
-from kivy.lang import Builder
-from kivy.utils import platform
-from kivy.clock import Clock
-from kivy.compat import PY2
+from kivy.properties            import (ObjectProperty, StringProperty, OptionProperty, ListProperty, BooleanProperty)
+from kivy.lang                  import Builder
+from kivy.utils                 import platform
+from kivy.clock                 import Clock
+from kivy.compat                import PY2
 import string
-from os.path import sep, dirname, expanduser, isdir, join
-from os import walk
-from sys import getfilesystemencoding
-from functools import partial
+from os.path                    import sep, dirname, expanduser, isdir, join
+from os                         import walk
+from sys                        import getfilesystemencoding
+from functools                  import partial
 
 if platform == 'win':
     from ctypes import windll, create_unicode_buffer
@@ -108,22 +107,22 @@ def get_drives():
             if bitmask & 1:
                 name = create_unicode_buffer(64)
                 # get name of the drive
-                drive = letter + u':'
+                drive = letter + ':'
                 res = GetVolumeInformationW(drive + sep, name, 64, None,
                                             None, None, None, 0)
                 drives.append((drive, name.value))
             bitmask >>= 1
     elif platform == 'linux':
         drives.append((sep, sep))
-        drives.append((expanduser(u'~'), '~/'))
-        places = (sep + u'mnt', sep + u'media')
+        drives.append((expanduser('~'), '~/'))
+        places = (sep + 'mnt', sep + 'media')
         for place in places:
             if isdir(place):
                 for directory in next(walk(place))[1]:
                     drives.append((place + sep + directory, directory))
     elif platform == 'macosx' or platform == 'ios':
-        drives.append((expanduser(u'~'), '~/'))
-        vol = sep + u'Volume'
+        drives.append((expanduser('~'), '~/'))
+        vol = sep + 'Volume'
         if isdir(vol):
             for drive in next(walk(vol))[1]:
                 drives.append((vol + sep + drive, drive))
@@ -133,7 +132,7 @@ class FileBrowserIconView(IconView):
     pass
 
 Builder.load_string('''
-#:kivy 1.2.0
+#:kivy 2.0.0
 #:import metrics kivy.metrics
 #:import abspath os.path.abspath
 
@@ -175,6 +174,7 @@ Builder.load_string('''
                 size_hint_y: None
                 height: '22dp'
                 text_size: self.size
+                color: 0,0,0,1
                 padding_x: '10dp'
                 text: abspath(root.path)
                 valign: 'middle'
@@ -285,7 +285,7 @@ class LinkTree(TreeView):
         sig_new = []
         for path, name in get_drives():
             if platform == 'win':
-                text = u'{}({})'.format((name + ' ') if name else '', path)
+                text = '{}({})'.format((name + ' ') if name else '', path)
             else:
                 text = name
             nodes_new.append((text, path))
@@ -382,7 +382,7 @@ class FileBrowser(BoxLayout):
     .. versionchanged:: 1.1
     '''
 
-    path = StringProperty(u'/')
+    path = StringProperty('/')
     '''
     :class:`~kivy.properties.StringProperty`, defaults to the current working
     directory as a unicode string. It specifies the path on the filesystem that
@@ -433,7 +433,7 @@ class FileBrowser(BoxLayout):
     .. versionadded:: 1.1
     '''
 
-    dirselect = BooleanProperty(False)
+    dirselect = BooleanProperty(True)
     '''
     :class:`~kivy.properties.BooleanProperty`, defaults to False.
     Determines whether directories are valid selections or not.

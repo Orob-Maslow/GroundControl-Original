@@ -8,21 +8,23 @@ This page is used to manually move the machine, see the positional readout, and 
 
 from kivy.uix.screenmanager                    import Screen
 from kivy.properties                           import ObjectProperty, StringProperty
-from DataStructures.makesmithInitFuncs         import MakesmithInitFuncs
+from datastructures.makesmithInitFuncs         import MakesmithInitFuncs
 from kivy.uix.popup                            import Popup
-from UIElements.touchNumberInput               import TouchNumberInput
-from UIElements.zAxisPopupContent              import ZAxisPopupContent
-from DataStructures.data                       import Data
+from uielements.touchNumberInput               import TouchNumberInput
+from uielements.zAxisPopupContent              import ZAxisPopupContent
+from datastructures.data                       import Data
 from math                                      import sqrt
 from time                                      import time
 import re
 import global_variables
 
+
+
 class FrontPage(Screen, MakesmithInitFuncs):
     textconsole    = ObjectProperty(None)
     connectmenu    = ObjectProperty(None) #make ConnectMenu object accessible at this scope
     gcodecanvas    = ObjectProperty(None) 
-    screenControls = ObjectProperty(None) 
+    screenControls = ObjectProperty(None)
     
     connectionStatus = StringProperty("Not Connected")
     
@@ -57,43 +59,46 @@ class FrontPage(Screen, MakesmithInitFuncs):
         super(FrontPage, self).__init__(**kwargs)
         self.data = data
         
-        self.upLeftArrow.btnBackground          = self.data.iconPath + 'UpLeftArrow.png'
-        self.upArrow.btnBackground              = self.data.iconPath + 'UpArrow.png'
-        self.upRightArrow.btnBackground         = self.data.iconPath + 'UpRightArrow.png'
-        self.leftArrow.btnBackground            = self.data.iconPath + 'LeftArrow.png'
-        self.homeBtn.btnBackground              = self.data.iconPath + 'Home.png'
-        self.rightArrow.btnBackground           = self.data.iconPath + 'RightArrow.png'
-        self.downLeftArrow.btnBackground        = self.data.iconPath + 'DownLeftArrow.png'
-        self.downArrow.btnBackground            = self.data.iconPath + 'DownArrow.png'
-        self.downRightArrow.btnBackground       = self.data.iconPath + 'DownRightArrow.png'
+        self.upLeftArrow.btnBackground          = self.data.iconPath + 'upLeftarrow.png'
+        self.upArrow.btnBackground              = self.data.iconPath + 'uparrow.png'
+        self.upRightArrow.btnBackground         = self.data.iconPath + 'uprightarrow.png'
+        self.leftArrow.btnBackground            = self.data.iconPath + 'leftarrow.png'
+        self.homeBtn.btnBackground              = self.data.iconPath + 'home.png'
+        self.rightArrow.btnBackground           = self.data.iconPath + 'rightarrow.png'
+        self.downLeftArrow.btnBackground        = self.data.iconPath + 'downLeftarrow.png'
+        self.downArrow.btnBackground            = self.data.iconPath + 'downarrow.png'
+        self.downRightArrow.btnBackground       = self.data.iconPath + 'downrightarrow.png'
         
-        self.macro1Btn.btnBackground            = self.data.iconPath + 'Generic.png'
+        self.macro1Btn.btnBackground            = self.data.iconPath + 'generic.png'
         self.macro1Btn.textColor                = self.data.fontColor
-        self.macro2Btn.btnBackground            = self.data.iconPath + 'Generic.png'
+        self.macro2Btn.btnBackground            = self.data.iconPath + 'generic.png'
         self.macro2Btn.textColor                = self.data.fontColor
-        self.zAxisBtn.btnBackground             = self.data.iconPath + 'Generic.png'
+        self.zAxisBtn.btnBackground             = self.data.iconPath + 'generic.png'
         self.zAxisBtn.textColor                 = self.data.fontColor
-        self.moveDistInput.btnBackground        = self.data.iconPath + 'Generic.png'
+        self.moveDistInput.btnBackground        = self.data.iconPath + 'generic.png'
         self.moveDistInput.textColor            = self.data.fontColor
-        self.unitsBtn.btnBackground             = self.data.iconPath + 'Generic.png'
+        self.unitsBtn.btnBackground             = self.data.iconPath + 'generic.png'
         self.unitsBtn.textColor                 = self.data.fontColor
-        self.defHomeBtn.btnBackground           = self.data.iconPath + 'Generic.png'
+        self.defHomeBtn.btnBackground           = self.data.iconPath + 'generic.png'
         self.defHomeBtn.textColor               = self.data.fontColor
-        self.zRight.btnBackground               = self.data.iconPath + 'Generic.png'
+        self.zRight.btnBackground               = self.data.iconPath + 'generic.png'
         self.zRight.textColor                   = self.data.fontColor
-        self.zLeft.btnBackground                = self.data.iconPath + 'Generic.png'
+        self.zLeft.btnBackground                = self.data.iconPath + 'generic.png'
         self.zLeft.textColor                    = self.data.fontColor
-        self.oneLeft.btnBackground              = self.data.iconPath + 'Generic.png'
+        self.oneLeft.btnBackground              = self.data.iconPath + 'generic.png'
         self.oneLeft.textColor                  = self.data.fontColor
-        self.oneRight.btnBackground             = self.data.iconPath + 'Generic.png'
+        self.oneRight.btnBackground             = self.data.iconPath + 'generic.png'
         self.oneRight.textColor                 = self.data.fontColor
         
-        self.run.btnBackground                  = self.data.iconPath + 'RunGreen.png'
-        self.holdBtn.btnBackground              = self.data.iconPath + 'HoldYellow.png'
-        self.holdBtn.secretText                 = "HOLD"
-        self.stopBtn.btnBackground              = self.data.iconPath + 'StopRed.png'
+        self.run.btnBack                 = self.data.iconPath + 'rungreena.png'
+        self.run.btnBackDown             = self.data.iconPath + 'rungreendwn.png'
+        self.holdBtn.btnBack             = self.data.iconPath + 'Holdyellowa.png'
+        self.holdBtn.btnBackDown         = self.data.iconPath + 'Holdyellowdwn.png'
+        self.holdBtn.secretText          = "HOLD"
+        self.stopBtn.btnBack             = self.data.iconPath + 'stopreda.png'
+        self.stopBtn.btnBackDown         = self.data.iconPath + 'stopreddwn.png'
+        self.goTo.btnBackground          = self.data.iconPath + 'generic.png'
         
-        self.goTo.btnBackground                 = self.data.iconPath + 'GoTo.png'
 
     def buildReadoutString(self, value):
         '''
@@ -123,12 +128,12 @@ class FrontPage(Screen, MakesmithInitFuncs):
         self.tick+=1
         if self.tick>=4:    #Can't do this every time... it's too noisy, so we do it every 5rd time (0.1s).
             self.tick=0
-            if self.lasttime <> 0.0:
+            if self.lasttime != 0.0:
                 try:
                     delta = sqrt( (xPos-self.lastpos[0])*(xPos-self.lastpos[0]) + (yPos-self.lastpos[1])*(yPos-self.lastpos[1]) + (zPos-self.lastpos[2]) * (zPos-self.lastpos[2]))
                     Vel = delta / (time()-self.lasttime) * 60.0 #In XXXX/minute
                 except:
-                    print "unable to compute velocity"
+                    print ("unable to compute velocity")
                     Vel = 0
             else:
                 Vel=0
@@ -192,12 +197,12 @@ class FrontPage(Screen, MakesmithInitFuncs):
         pass
     
     def onUploadFlagChange(self, callback, newFlagValue):
-        if self.data.uploadFlag is 0 and self.data.gcodeIndex > 1: #if the machine is stopped partway through a file
+        if self.data.uploadFlag == 0 and self.data.gcodeIndex > 1: #if the machine is stopped partway through a file
             self.holdBtn.secretText = "CONTINUE"
-            self.holdBtn.btnBackground              = self.data.iconPath + 'ContinueYellow.png'
+            self.holdBtn.btnBack              = self.data.iconPath + 'continueyellowa.png'
         else:
             self.holdBtn.secretText = "HOLD"
-            self.holdBtn.btnBackground              = self.data.iconPath + 'HoldYellow.png'
+            self.holdBtn.btnBack             = self.data.iconPath + 'holdyellowa.png'
 
     def moveGcodeZ(self,moves):
         '''
@@ -254,7 +259,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
             
             self.gcodecanvas.positionIndicator.setPos(xTarget,yTarget,self.data.units)
         except:
-            print "Unable to update position for new gcode line"
+            print ("Unable to update position for new gcode line")
     
     def pause(self):
         if  self.holdBtn.secretText == "HOLD":
@@ -263,7 +268,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
         else:
             self.data.uploadFlag = 1
             self.data.quick_queue.put("~") #send cycle resume command to unpause the machine
-            print("Run Resumed")
+            #print("Run Resumed")
     
     def jmpsize(self):
         try:
@@ -272,7 +277,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
             pass
     
     def test(self):
-        print "test has no current function"
+        print ("test has no current function")
     
     def upLeft(self):
         self.jmpsize()
@@ -318,8 +323,12 @@ class FrontPage(Screen, MakesmithInitFuncs):
         self.popupContent      = ZAxisPopupContent(done=self.dismissZAxisPopup)
         self.popupContent.data = self.data
         self.popupContent.initialize()
-        self._popup = Popup(title="Z-Axis", content=self.popupContent,
-                            size_hint=(0.5, 0.5))
+        self._popup = Popup(title="Z-Axis", 
+                            content=self.popupContent,
+                            size_hint=(0.5, 0.5),
+                            background_color=(1, 1, 1, 0.7),
+                            background='[color=cccccc]'
+                            )
         self._popup.open()
     
     def dismissZAxisPopup(self):
@@ -342,11 +351,11 @@ class FrontPage(Screen, MakesmithInitFuncs):
         self.gcodeVel = "[MAN]"
         
         safeHeightMM = float(self.data.config.get('Maslow Settings', 'zAxisSafeHeight'))
-        safeHeightInches = safeHeightMM / 25.5
+        safeHeightInches = safeHeightMM / 25.4
         if self.data.units == "INCHES":
             self.data.gcode_queue.put("G00 Z" + '%.3f'%(safeHeightInches))
         else:
-            self.data.gcode_queue.put("G00 Z" + str(safeHeightMM))
+            self.data.gcode_queue.put("G00 Z" + str(safeHeightMM)) 
         
         self.data.gcode_queue.put("G00 X" + str(self.data.gcodeShift[0]) + " Y" + str(self.data.gcodeShift[1]) + " ")
         
@@ -372,7 +381,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
             self.data.gcode_queue.put(self.data.gcode[self.data.gcodeIndex])
             self.data.gcodeIndex = self.data.gcodeIndex + 1
         except:
-            print "gcode run complete"
+            print ("gcode run complete")
             self.gcodecanvas.uploadFlag = 0
             self.data.gcodeIndex = 0
     
@@ -391,7 +400,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
         
         self.popupContent = TouchNumberInput(done=self.dismiss_popup, data=self.data)
         self._popup = Popup(title="Change increment size of machine movement", content=self.popupContent,
-                            size_hint=(0.9, 0.9))
+                            size_hint=(0.5, 0.5), background_color=(1, 1, 1, 0.7), background='[color=cccccc]')
         self._popup.open()
         if global_variables._keyboard:
             global_variables._keyboard.bind(on_key_down=self.keydown_popup)
@@ -450,7 +459,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
         
         self.popupContent = TouchNumberInput(done=self.dismiss_gotoLinePopup, data=self.data)
         self._popup = Popup(title="Go to gcode line", content=self.popupContent,
-                            size_hint=(0.9, 0.9))
+                            size_hint=(0.5, 0.5), background_color=(1, 1, 1, 0.7), background='[color=cccccc]')
         self._popup.open()
         if global_variables._keyboard:
             global_variables._keyboard.bind(on_key_down=self.keydown_popup)
@@ -484,4 +493,11 @@ class FrontPage(Screen, MakesmithInitFuncs):
     def update_macro_titles(self):
         self.macro1Btn.text = self.data.config.get('Maslow Settings', 'macro1_title')
         self.macro2Btn.text = self.data.config.get('Maslow Settings', 'macro2_title')
+
+    def directCommand(self):
+
+        impt = str(self.dCommand.text)
+        self.data.gcode_queue.put(impt)
+        print('Command ' + impt)
+    
 

@@ -1,11 +1,11 @@
 from kivy.uix.floatlayout                           import    FloatLayout
-from DataStructures.makesmithInitFuncs              import    MakesmithInitFuncs
-from UIElements.scrollableTextPopup                 import    ScrollableTextPopup
+from datastructures.makesmithInitFuncs              import    MakesmithInitFuncs
+from uielements.scrollableTextPopup                 import    ScrollableTextPopup
 from kivy.uix.popup                                 import    Popup
-from CalibrationWidgets.calibrationFrameWidget      import    CalibrationFrameWidget
-from Simulation.simulationCanvas                    import    SimulationCanvas
+from calibration_widgets.calibrationFrameWidget     import    CalibrationFrameWidget
+from simulation.simulationCanvas                    import    simulationCanvas
 from kivy.clock                                     import    Clock
-from   kivy.app                                     import    App
+from kivy.app                                       import    App
 import sys
 import os
 import time
@@ -13,12 +13,12 @@ import time
 class Diagnostics(FloatLayout, MakesmithInitFuncs):
     
     def about(self):
-        popupText = 'Ground Control v' + str(self.data.version) + ' allows you to control the Maslow machine. ' + \
+        popupText = 'Ground Control 2022 allows you to control the Maslow machine. ' + \
                     'From within Ground Control, you can move the machine to where you want to begin a cut, calibrate the machine, ' + \
-                    'open and run a g-code file, or monitor the progress of an ongoing cut. For more details see the Maslow website ' + \
-                    'at http://www.maslowcnc.com/. The source code can be downloaded at https://github.com/MaslowCNC. ' + \
+                    'open and run a g-code file, or monitor the progress of an ongoing cut. For more details about the current version see our website ' + \
+                    'at https://www.eastbaysource.com/. The source code can be downloaded at https://github.com/EBS-Maslow/GroundControl. ' + \
                     '\n\n' + \
-                    'GroundControl is part of the of the Maslow Control Software Copyright (C) 2014-2017 Bar Smith. ' + \
+                    'GroundControl is part of the of the Maslow cnc Control Software initially made by Bar Smith and later modified/updated by EastBaySource. ' + \
                     'This program is free software: you can redistribute it and/or modify ' + \
                     'it under the terms of the GNU General Public License as published by ' + \
                     'the Free Software Foundation, either version 3 of the License, or ' + \
@@ -31,12 +31,12 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
                     '\n\n' + \
                     'You should have received a copy of the GNU General Public License ' + \
                     'along with the Maslow Control Software. If not, see <http://www.gnu.org/licenses/>.'
-                
-        content = ScrollableTextPopup(cancel = self.dismiss_popup, text = popupText, markup = True)
+
+        content = ScrollableTextPopup(text=popupText)
         if sys.platform.startswith('darwin'):
-            self._popup = Popup(title="About GroundControl", content=content, size=(520,400), size_hint=(.6, .6))
+            self._popup = Popup(title='About GroundControl', content=content, size=(520,480), background_color=(0,0,0,.9), size_hint=(.6, .6), background='[color=cccccc]')
         else:
-            self._popup = Popup(title="About GroundControl", content=content, size=(520,400), size_hint=(None, None))
+            self._popup = Popup(title='About GroundControl', content=content, size=(520,480), background_color=(0,0,0,.9), size_hint=(None, None), background='[color=cccccc]')
         self._popup.open()
     
     def dismiss_popup(self):
@@ -58,8 +58,14 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         self.popupContent.setupJustChainsCalibration()
         self.popupContent.on_Enter()
         
-        self._popup = Popup(title="Calibrate Chain Lengths", content=self.popupContent,
-                            size_hint=(0.85, 0.95), auto_dismiss = False)
+        self._popup = Popup(title="Calibrate Chain Lengths",
+                            title_color=(0,0,0,1),
+                            background_color=(0,0,0,.7),
+                            background='[color=cccccc]',
+                            content=self.popupContent,
+                            size_hint=(0.85, 0.95),
+                            auto_dismiss = False
+                            )
         self._popup.open()
     
     def runJustTriangularCuts(self):
@@ -73,8 +79,14 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         self.popupContent.setupJustTriangularTestCuts()
         self.popupContent.on_Enter()
         
-        self._popup = Popup(title="Calibrate Chain Lengths", content=self.popupContent,
-                            size_hint=(0.85, 0.95), auto_dismiss = False)
+        self._popup = Popup(title="Calibrate Chain Lengths",
+                            title_color=(0,0,0,1),
+                            background_color=(0,0,0,.7),
+                            background='[color=cccccc]',
+                            content=self.popupContent,
+                            size_hint=(0.85, 0.95),
+                            auto_dismiss = False
+                             )
         self._popup.open()
     
     def manualCalibration(self):
@@ -88,8 +100,14 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         self.popupContent.setupManualCalibration()
         self.popupContent.on_Enter()
         
-        self._popup = Popup(title="Calibrate Chain Lengths", content=self.popupContent,
-                            size_hint=(0.85, 0.95), auto_dismiss = False)
+        self._popup = Popup(title="Lengths",
+                            title_color=(0,0,0,1),
+                            background_color=(0,0,0,.7),
+                            background='[color=cccccc]',
+                            content=self.popupContent,
+                            size_hint=(0.85, 0.95),
+                            auto_dismiss = False
+                            )
         self._popup.open()
     
     def manualCalibrateChainLengths(self):
@@ -114,8 +132,13 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         self.popupContent       = CalibrationFrameWidget(done=self.dismissCalibrationPopup)
         self.popupContent.setupFullCalibration()
         self.popupContent.on_Enter()
-        self._popup = Popup(title="Calibration", content=self.popupContent,
-                            size_hint=(0.95, 0.95), auto_dismiss = False)
+        self._popup = Popup(title="Calibration",
+                            content=self.popupContent,
+                            size_hint=(0.85, 0.95),
+                            background_color=(0, 0, 0, 0.1),
+                            background='[color=cccccc]',
+                            auto_dismiss = False
+                            )
         self._popup.open()
     
     def dismissCalibrationPopup(self):
@@ -127,13 +150,19 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         self.data.calibrationInProcess = False
         self._popup.dismiss()
     
-    def launchSimulation(self):
-        print "launch simulation"
-        self.popupContent      = SimulationCanvas()
+    def launchsimulation(self):
+        print ("launch simulation")
+        self.popupContent      = simulationCanvas()
         self.popupContent.data = self.data
         self.popupContent.initialize()
-        self._popup = Popup(title="Maslow Calibration Simulation", content=self.popupContent,
-                            size_hint=(0.85, 0.95), auto_dismiss = True)
+        self._popup = Popup(title="Maslow Calibration simulation",
+                            title_color=(0,0,0,1),
+                            content=self.popupContent,
+                            size_hint=(0.85, 0.95),
+                            background_color=(0,0,0,.7),
+                            background='[color=cccccc]',
+                            auto_dismiss = True
+                            )
         self._popup.open()
         self.parentWidget.close()
     
@@ -143,7 +172,7 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         Loads the Calibration Benchmark Test file
         
         '''
-        self.data.gcodeFile = "./gcodeForTesting/Calibration Benchmark Test.nc"
+        self.data.gcodeFile = "./gcodefortesting/Calibration Benchmark Test.nc"
         self.parentWidget.close()
     
     def resetAllSettings(self):
@@ -173,25 +202,32 @@ class Diagnostics(FloatLayout, MakesmithInitFuncs):
         self.popupContent.setupMeasureChainTolerances()
         self.popupContent.on_Enter()
         
-        self._popup = Popup(title="Measure Chain Tolerances", content=self.popupContent,
-                            size_hint=(0.85, 0.95), auto_dismiss = False)
+        self._popup = Popup(title="Measure Chain Tolerances",
+                            title_color=(0,0,0,1),
+                            background_color=(0,0,0,.8),
+                            background='[color=cccccc]',
+                            content=self.popupContent,
+                            size_hint=(0.85, 0.95),
+                            auto_dismiss = False
+                            )
         self._popup.open()
     
     def advancedOptionsFunctions(self, text):
         
-        if   text == "Test Feedback System":
-            self.testFeedbackSystem()
-        elif text == "Set Chain Length - Manual":
+        if  text == "Set Chain Length - Manual":
             self.manualCalibrateChainLengths()
         elif text == "Wipe EEPROM":
             self.wipeEEPROM()
         elif text == "Simulation":
-            self.launchSimulation()
+            self.launchsimulation()
         elif text == "Load Calibration Benchmark Test":
             self.loadCalibrationBenchmarkTest()
         elif text == "Run Triangular Test Cut Pattern":
             self.runJustTriangularCuts()
-        elif text == "Reset settings to defaults":
+        elif text == "Factory Reset":
+            self.wipeEEPROM()
             self.resetAllSettings()
-        elif text == "Compute chain calibration factors":
-            self.measureChainTolerances()
+        #elif text == "Compute chain calibration factors":
+            #self.measureChainTolerances()
+        elif text == "Manual Calibration":
+            self.manualCalibration()

@@ -5,7 +5,7 @@ The widget which requests a guess for the distance between the chain attachment 
 '''
 from   kivy.uix.gridlayout                          import   GridLayout
 from   kivy.properties                              import   ObjectProperty
-from   UIElements.touchNumberInput                  import   TouchNumberInput
+from   uielements.touchNumberInput                  import   TouchNumberInput
 from   kivy.uix.popup                               import   Popup
 from   kivy.app                                     import   App
 import global_variables

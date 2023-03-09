@@ -5,7 +5,7 @@ behavior.
 
 '''
 
-from DataStructures.makesmithInitFuncs       import MakesmithInitFuncs
+from datastructures.makesmithInitFuncs       import MakesmithInitFuncs
 import threading
 
 
@@ -83,7 +83,7 @@ class Logger(MakesmithInitFuncs):
         Stops recording error values.
         
         '''
-        print "stopping to record"
+        print("stopping to record")
         self.recordingPositionalErrors = False
     
     def reportAvgError(self):

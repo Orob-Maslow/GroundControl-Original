@@ -1,6 +1,6 @@
 from kivy.uix.screenmanager                 import Screen
 from kivy.properties                        import ObjectProperty
-from DataStructures.makesmithInitFuncs      import MakesmithInitFuncs
+from datastructures.makesmithInitFuncs      import MakesmithInitFuncs
 
 
 class OtherFeatures(Screen, MakesmithInitFuncs):
@@ -13,9 +13,10 @@ class OtherFeatures(Screen, MakesmithInitFuncs):
         self.viewmenu.setUpData(data)
         self.connectmenu.setUpData(data)
         self.diagnostics.setUpData(data)
-        self.runmenu.data = self.data
-        self.runmenu.parentWidget = self
+        #self.runmenu.data = self.data
+        #self.runmenu.parentWidget = self
         self.connectmenu.updatePorts()
         self.diagnostics.parentWidget = self
         self.viewmenu.parentWidget = self
         self.connectmenu.parentWidget = self
+        

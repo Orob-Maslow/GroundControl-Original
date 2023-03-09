@@ -1,13 +1,13 @@
 import os
 from kivy.uix.gridlayout import GridLayout
-from UIElements.fileBrowser import FileBrowser
+from uielements.fileBrowser import FileBrowser
 from kivy.uix.popup import Popup
-from DataStructures.makesmithInitFuncs import MakesmithInitFuncs
-from UIElements.backgroundPickDlg import BackgroundPickDlg
+from datastructures.makesmithInitFuncs import MakesmithInitFuncs
+from uielements.backgroundPickDlg import BackgroundPickDlg
 from kivy.core.image import Image as CoreImage
 from PIL import Image as PILImage
 from io import BytesIO
-import json
+
 
 graphicsExtensions = (".jpg", ".png", ".jp2",".webp",".pbm",".ppm",".pgm")
 
@@ -37,7 +37,7 @@ class BackgroundMenu(GridLayout, MakesmithInitFuncs):
         else:
             # Don't go up a dir if the "backgroundFile" is a directory!
             startingPath = self.data.backgroundFile
-        if startingPath is "":
+        if startingPath == "":
             startingPath = os.path.expanduser('~')
         # We want to filter to show only files that ground control can open
         validFileTypes = graphicsExtensions
@@ -50,7 +50,7 @@ class BackgroundMenu(GridLayout, MakesmithInitFuncs):
         content.bind(on_success=self.load, on_canceled=self.dismiss_popup,
                      on_submit=self.load)         
         self._popup = Popup(title="Select a file...", content=content,
-                            size_hint=(0.9, 0.9))
+                            size_hint=(0.9, 0.9), background='[color=cccccc]')
         self._popup.open()
 
     def reloadBackground(self):

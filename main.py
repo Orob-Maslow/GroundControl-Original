@@ -1,14 +1,11 @@
-'''
-
-Kivy Imports
-
-'''
 from kivy.config                import Config
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.set('graphics', 'minimum_width', '620')
 Config.set('graphics', 'minimum_height', '440')
 Config.set('kivy', 'exit_on_escape', '0')
 Config.set('graphics', 'multisamples', '0')
+Config.set('kivy', 'window_icon', 'images/icon.ico')
+
 from kivy.app                   import App
 from kivy.uix.gridlayout        import GridLayout
 from kivy.uix.floatlayout       import FloatLayout
@@ -17,33 +14,30 @@ from kivy.core.window           import Window
 from kivy.uix.button            import Button
 from kivy.clock                 import Clock
 from kivy.uix.popup             import Popup
+from kivy.uix.textinput         import TextInput
+from kivy.resources             import resource_add_path, resource_find
 import math
 import global_variables
+import os
 import sys
 import re
 import json
 
-'''
-
-Internal Module Imports
-
-'''
-
-from UIElements.frontPage         import   FrontPage
-from UIElements.screenControls    import   ScreenControls
-from UIElements.gcodeCanvas       import   GcodeCanvas
-from UIElements.otherFeatures     import   OtherFeatures
-from UIElements.softwareSettings  import   SoftwareSettings
-from UIElements.viewMenu          import   ViewMenu
-from UIElements.runMenu           import   RunMenu
-from UIElements.connectMenu       import   ConnectMenu
-from UIElements.diagnosticsMenu   import   Diagnostics
-from UIElements.manualControls    import   ManualControl
-from DataStructures.data          import   Data
-from Connection.nonVisibleWidgets import   NonVisibleWidgets
-from UIElements.notificationPopup import   NotificationPopup
-from Settings                     import   maslowSettings
-from UIElements.backgroundMenu    import   BackgroundMenu
+from uielements.frontPage         import   FrontPage
+from uielements.screenControls    import   ScreenControls
+from uielements.gcodeCanvas       import   GcodeCanvas
+from uielements.otherFeatures     import   OtherFeatures
+from uielements.softwareSettings  import   SoftwareSettings
+from uielements.viewMenu          import   ViewMenu
+from uielements.runMenu           import   RunMenu
+from uielements.connectMenu       import   ConnectMenu
+from uielements.diagnosticsMenu   import   Diagnostics
+from uielements.manualControls    import   ManualControl
+from datastructures.data          import   Data
+from connection.nonVisibleWidgets import   NonVisibleWidgets
+from uielements.notificationPopup import   NotificationPopup
+from settings                     import   maslowSettings
+from uielements.backgroundMenu    import   BackgroundMenu
 '''
 
 Main UI Program
@@ -60,23 +54,23 @@ class GroundControlApp(App):
         
         interface       =  FloatLayout()
         self.data       =  Data()
-        
+        self.title      = 'Ground Control 2022'
         if self.config.get('Maslow Settings', 'colorScheme') == 'Light':
-            self.data.iconPath               = './Images/Icons/normal/'
+            self.data.iconPath               = './images/icons/normal/'
             self.data.fontColor              = '[color=7a7a7a]'
-            self.data.drawingColor           = [.47,.47,.47]
-            Window.clearcolor                = (1, 1, 1, 1)
+            self.data.drawingColor           = [0.47,0.47,0.47]
+            Window.clearcolor                = (0.1, 0.1, 0.1, 1)
             self.data.posIndicatorColor      =  [0,0,0]
             self.data.targetInicatorColor    =  [1,0,0]
         elif self.config.get('Maslow Settings', 'colorScheme') == 'Dark':
-            self.data.iconPath               = './Images/Icons/highvis/'
+            self.data.iconPath               = './images/icons/highvis/'
             self.data.fontColor              = '[color=000000]'
             self.data.drawingColor           = [1,1,1]
             Window.clearcolor                = (0, 0, 0, 1)
             self.data.posIndicatorColor      =  [1,1,1]
             self.data.targetInicatorColor    =  [1,0,0]
         elif self.config.get('Maslow Settings', 'colorScheme') == 'DarkGreyBlue':
-            self.data.iconPath               = './Images/Icons/darkgreyblue/'
+            self.data.iconPath               = './images/icons/darkgreyblue/'
             self.data.fontColor              = '[color=000000]'
             self.data.drawingColor           = [1,1,1]
             Window.clearcolor                = (0.06, 0.10, 0.2, 1)
@@ -101,14 +95,6 @@ class GroundControlApp(App):
         # force create an ini no matter what.
         self.config.write()
 
-        if self.config.get('Advanced Settings', 'encoderSteps') == '8148.0':
-            self.data.message_queue.put("Message: This update will adjust the the number of encoder pulses per rotation from 8,148 to 8,113 in your settings which improves the positional accuracy.\n\nPerforming a calibration will help you get the most out of this update.")
-            self.config.set('Advanced Settings', 'encoderSteps', '8113.73')
-        #up the maximum feedrate
-        if self.config.get('Advanced Settings', 'maxFeedrate') == '700':
-            self.data.message_queue.put("Message: This update will increase the maximum feedrate of your machine. You can adjust this value under the Advanced settings.")
-            self.config.set('Advanced Settings', 'maxFeedrate', '800')
-            self.config.write()
         
         self.data.comport = self.config.get('Maslow Settings', 'COMport')
         self.data.gcodeFile = self.config.get('Maslow Settings', 'openFile')
@@ -165,7 +151,6 @@ class GroundControlApp(App):
         """
         Add custom section to the default configuration object.
         """
-        
         settings.add_json_panel('Maslow Settings', self.config, data=maslowSettings.getJSONSettingSection('Maslow Settings'))
         settings.add_json_panel('Advanced Settings', self.config, data=maslowSettings.getJSONSettingSection('Advanced Settings'))
         settings.add_json_panel('Ground Control Settings', self.config, data=maslowSettings.getJSONSettingSection("Ground Control Settings"))
@@ -232,7 +217,7 @@ class GroundControlApp(App):
         
         Respond to changes in the configuration.
         
-        """
+        """ 
         
         # Update GC things
         if section == "Maslow Settings":
@@ -271,9 +256,9 @@ class GroundControlApp(App):
         
         # Push settings that can be directly written to machine
         firmwareKey = maslowSettings.getFirmwareKey(section, key)
-        if firmwareKey is not None:
+        if firmwareKey != None:
             self.data.gcode_queue.put("$" + str(firmwareKey) + "=" + str(value))
-    
+
     def requestMachineSettings(self, *args):
         ''' 
         Requests the machine to report all settings.  This will implicitly
@@ -283,7 +268,7 @@ class GroundControlApp(App):
         '''
         if self.data.connectionStatus == 1:
             self.data.gcode_queue.put("$$")
-    
+            
     def receivedSetting(self, message):
         '''
         This parses a settings report from the machine, usually received in 
@@ -292,7 +277,7 @@ class GroundControlApp(App):
         '''
         parameter, position = self.parseFloat(message, 0)
         value, position = self.parseFloat(message, position)
-        if (parameter is not None and value is not None):
+        if (parameter != None and value != None):
             maslowSettings.syncFirmwareKey(int(parameter), value, self.data)
     
     def parseFloat(self, text, position=0):
@@ -308,7 +293,7 @@ class GroundControlApp(App):
             return (float(match.group(0)), match.end(0))
         else:
             return (None, position)
-    
+     
     '''
     
     Update Functions
@@ -329,7 +314,6 @@ class GroundControlApp(App):
         '''
         while not self.data.message_queue.empty(): #if there is new data to be read
             message = self.data.message_queue.get()
-            
             if message[0] == "<":
                 self.setPosOnScreen(message)
             elif message[0] == "$":
@@ -342,7 +326,7 @@ class GroundControlApp(App):
                     try:
                         self.data.measureRequest(measuredDist)
                     except:
-                        print "No function has requested a measurement"
+                        print ("No function has requested a measurement")
             elif message[0:13] == "Maslow Paused":
                 self.data.uploadFlag = 0
                 self.writeToTextConsole(message)
@@ -357,11 +341,25 @@ class GroundControlApp(App):
                     pass                                                            #there wasn't a popup to close
                 content = NotificationPopup(continueOn = self.dismiss_popup_continue, text = message[9:])
                 if sys.platform.startswith('darwin'):
-                    self._popup = Popup(title="Notification: ", content=content,
-                            auto_dismiss=False, size=(360,240), size_hint=(.3, .3))
+                    self._popup = Popup(title="Notification: ",
+                                        title_color=(0, 0, 0, 1),
+                                        content=content,
+                                        auto_dismiss=False,
+                                        size=(360,240),
+                                        size_hint=(.3, .35),
+                                        background_color=(0, 0, 0, .7),
+                                        background='[color=cccccc]'
+                                        )
                 else:
-                    self._popup = Popup(title="Notification: ", content=content,
-                            auto_dismiss=False, size=(360,240), size_hint=(None, None))
+                    self._popup = Popup(title="Notification: ",
+                                        title_color=(0, 0, 0, 1),
+                                        content=content,
+                                        auto_dismiss=False,
+                                        size=(360,240),
+                                        size_hint=(None, None),
+                                        background_color=(0, 0, 0, .7),
+                                        background='[color=cccccc]'                                                           
+                                        )
                 self._popup.open()
                 if global_variables._keyboard:
                     global_variables._keyboard.bind(on_key_down=self.keydown_popup)
@@ -375,11 +373,25 @@ class GroundControlApp(App):
                     pass                                                            #there wasn't a popup to close
                 content = NotificationPopup(continueOn = self.dismiss_popup_continue, text = message[7:])
                 if sys.platform.startswith('darwin'):
-                    self._popup = Popup(title="Alarm Notification: ", content=content,
-                            auto_dismiss=False, size=(360,240), size_hint=(.3, .3))
+                    self._popup = Popup(title="Alarm Notification: ",
+                                        title_color=(0, 0, 0, 1),
+                                        background_color=(0, 0, 0, .7),
+                                        background='[color=cccccc]',
+                                        content=content,
+                                        auto_dismiss=False,
+                                        size=(360,240),
+                                        size_hint=(.3, .35)
+                                        )
                 else:
-                    self._popup = Popup(title="Alarm Notification: ", content=content,
-                            auto_dismiss=False, size=(360,240), size_hint=(None, None))
+                    self._popup = Popup(title="Alarm Notification: ",
+                                        title_color=(0, 0, 0, 1),
+                                        background_color=(0, 0, 0, .7),
+                                        background='[color=cccccc]',                
+                                        content=content,
+                                        auto_dismiss=False,
+                                        size=(360,240),
+                                        size_hint=(None, None)
+                                        )
                 self._popup.open()
                 if global_variables._keyboard:
                     global_variables._keyboard.bind(on_key_down=self.keydown_popup)
@@ -458,7 +470,7 @@ class GroundControlApp(App):
                 self.writeToTextConsole("Unable to resolve z Kinematics.")
                 self.zval = 0
         except:
-            print "One Machine Position Report Command Misread"
+            print ("One Machine Position Report Command Misread")
             return
 
         self.frontpage.setPosReadout(self.xval, self.yval, self.zval)
@@ -467,7 +479,7 @@ class GroundControlApp(App):
     def setErrorOnScreen(self, message):
         
         try:
-            startpt = message.find(':')+1 
+            startpt = message.find(':')+1
             endpt = message.find(',', startpt)
             leftErrorValueAsString = message[startpt:endpt]
             leftErrorValueAsFloat  = float(leftErrorValueAsString)
@@ -491,7 +503,12 @@ class GroundControlApp(App):
             
             
         except:
-            print "Machine Position Report Command Misread Happened Once"
+            print ("Machine Position Report Command Misread Happened Once")
     
 if __name__ == '__main__':
+    if hasattr(sys, '_MEIPASS'):
+        resource_add_path(os.path.join(sys._MEIPASS))
     GroundControlApp().run()
+
+
+

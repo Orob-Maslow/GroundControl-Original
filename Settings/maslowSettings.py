@@ -43,10 +43,100 @@ settings = {
             },
             {
                 "type": "string",
+                "title": "Spindle minimum RPM",
+                "desc": "Minimum usable RPM of your spindle (usually not less than 4000)",
+                "key": "spindleMinRpm",
+                "default": 4000,
+                "firmwareKey": 45
+            },                
+            {
+                "type": "string",
+                "title": "Spindle maximum RPM",
+                "desc": "Maximum RPM of your spindle",
+                "key": "spindleMaxRpm",
+                "default": 18000,
+                "firmwareKey": 46
+            },
+            {
+                "type": "string",
+                "title": "Spindle Dwell time in milliseconds",
+                "desc": "Sets how long the machine will wait to give the spindle time to to come up to the commanded speed before start moving",
+                "key": "spindleDwell",
+                "default": 0,
+                "firmwareKey": 47
+            },
+            {
+                "type": "bool",
+                "title": "z-axis installed",
+                "desc": "Does the machine have an automatic z-axis?",
+                "key": "zAxis",
+                "default": 1,
+                "firmwareKey": 16
+            },
+            {
+                "type": "string",
+                "title": "Z-axis RPM",
+                "desc": "Limits the maximum Z-axis RPM (max = 20)",
+                "key": "maxZRPM",
+                "default": 20,
+                "firmwareKey": 18
+            },
+            {
+                "type": "string",
+                "title": "Z-Axis Pitch",
+                "desc": "The number of mm moved per rotation of the z-axis",
+                "key": "zDistPerRot",
+                "default": 3.17,
+                "firmwareKey": 19
+            },
+            {
+                "type": "string",
+                "title": "Z-Axis Safe Travel Height in MM",
+                "desc": "The vertical distance above the work area to raise the z-axis for safe travel. Used by 'Home', 'Return to Center' and 'z-Axis' settings.",
+                "key": "zAxisSafeHeight",
+                "default": 5,
+            },
+            {
+                "type": "string",
+                "title": "Max touch Z-axis plunge",
+                "desc": "Max depth the z axis should plunge in order to find the touch probe",
+                "key": "maxTouchProbePlungeDistance",
+                "default": 0.0, 
+	        },
+            {
+                "type": "string",
+                "title": "Macro 1",
+                "desc": "User defined gcode bound to the Macro 1 button",
+                "key": "macro1",
+                "default": ""
+            },
+            {
+                "type": "string",
+                "title": "Macro 1 Title",
+                "desc": "User defined title for the Macro 1 button",
+                "key": "macro1_title",
+                "default": "Macro 1"
+            },
+            {
+                "type": "string",
+                "title": "Macro 2",
+                "desc": "User defined gcode bound to the Macro 2 button",
+                "key": "macro2",
+                "default": ""
+            },
+            {
+                "type": "string",
+                "title": "Macro 2 Title",
+                "desc": "User defined title for the Macro 2 button",
+                "key": "macro2_title",
+                "default": "Macro 2"
+            },                                                
+            {
+                "type": "string",
                 "title": "Distance Between Motors",
                 "desc": "The horizontal distance between the center of the motor shafts in MM.",
                 "key": "motorSpacingX",
-                "default": 2978.4,
+                "default": 3048.0,
                 "firmwareKey": 2
             },
             {
@@ -98,22 +188,6 @@ settings = {
                 "firmwareKey": 6
             },
             {
-                "type": "bool",
-                "title": "z-axis installed",
-                "desc": "Does the machine have an automatic z-axis?",
-                "key": "zAxis",
-                "default": 0,
-                "firmwareKey": 16
-            },
-            {
-                "type": "string",
-                "title": "Z-Axis Pitch",
-                "desc": "The number of mm moved per rotation of the z-axis",
-                "key": "zDistPerRot",
-                "default": 3.17,
-                "firmwareKey": 19
-            },
-            {
                 "type": "options",
                 "title": "Color Scheme",
                 "desc": "Switch between the light and dark color schemes. Restarting GC is needed for this change to take effect",
@@ -129,57 +203,15 @@ settings = {
                 "default": ""
             },
             {
-                "type": "string",
-                "title": "Macro 1",
-                "desc": "User defined gcode bound to the Macro 1 button",
-                "key": "macro1",
-                "default": ""
-            },
-            {
-                "type": "string",
-                "title": "Macro 1 Title",
-                "desc": "User defined title for the Macro 1 button",
-                "key": "macro1_title",
-                "default": "Macro 1"
-            },
-            {
-                "type": "string",
-                "title": "Macro 2",
-                "desc": "User defined gcode bound to the Macro 2 button",
-                "key": "macro2",
-                "default": ""
-            },
-            {
-                "type": "string",
-                "title": "Macro 2 Title",
-                "desc": "User defined title for the Macro 2 button",
-                "key": "macro2_title",
-                "default": "Macro 2"
-            },
-            {
-                "type": "string",
-                "title": "Z-Axis Safe Travel Height in MM",
-                "desc": "The vertical distance above the work area to raise the z-axis for safe travel. Used by 'Home', 'Return to Center' and 'z-Axis' settings.",
-                "key": "zAxisSafeHeight",
-                "default": 5,
-            },
-            {
                 "type": "bool",
                 "title": "Buffer Gcode",
                 "desc": "Buffer gcode on arduino to increase execution speed. Requres restart to take effect. Experimental.",
                 "key": "bufferOn",
                 "default": 0
-            }
+            }                 
         ],
     "Advanced Settings":
         [
-            {
-                "type": "string",
-                "title": "Max touch Z-axis plunge",
-                "desc": "Max depth the z axis should plunge in order to find the touch probe",
-                "key": "maxTouchProbePlungeDistance",
-                "default": 0.0,
-	    },
             {
                 "type": "string",
                 "title": "Encoder Steps per Revolution",
@@ -223,7 +255,7 @@ settings = {
                 "title": "Top/Bottom Chain Feed",
                 "desc": "On which side of the motor sprockets do the chains leave from to connect to the sled",
                 "options": ["Top", "Bottom"],
-                "default": "Top",
+                "default": "Bottom",
                 "key": "chainOverSprocket"
             },
             {
@@ -231,8 +263,8 @@ settings = {
                 "title": "Extend Chain Distance",
                 "desc": "The length in mm that will be extended during chain calibration",
                 "key": "chainExtendLength",
-                "default": 1651,
-                "firmwareKey": 11
+                "default": 1650,
+                "firmwareKey": 11 
             },
             {
                 "type": "string",
@@ -249,14 +281,14 @@ settings = {
                 "key": "zEncoderSteps",
                 "default": 7560.0,
                 "firmwareKey": 20
-            },
+            }, 
             {
                 "type": "options",
                 "title": "Spindle Automation",
                 "desc": "How should the spindle start and stop automatically based on gcode? Leave off for none, or set external servo control, or external relay control, active high or low.",
                 "key": "spindleAutomate",
-		"options": ["None", "Servo", "Relay_High", "Relay_Low"],
-                "default": "None",
+		        "options": ["None", "Servo", "Relay_High", "Relay_Low"],
+                "default": "Relay_High",
                 "firmwareKey": 17
             },
             {
@@ -264,7 +296,7 @@ settings = {
                 "title": "Max Feedrate",
                 "desc": "The maximum feedrate in mm/min that machine is capable of sustaining.  Setting this value too high will cause movements to start before the prior movement finishes.",
                 "key": "maxFeedrate",
-                "default": 800,
+                "default": 1050,
                 "firmwareKey": 15
             },
             {
@@ -301,20 +333,20 @@ settings = {
                 "desc": "Switch between trapezoidal and triangular kinematics",
                 "options": ["Quadrilateral", "Triangular"],
                 "key": "kinematicsType",
-                "default": 'Quadrilateral'
+                "default": 'Triangular'
             },
             {
                 "type": "string",
                 "title": "Rotation Radius for Triangular Kinematics",
                 "desc": "The distance between where the chains attach and the center of the router bit in mm",
                 "key": "rotationRadius",
-                "default": 100,
+                "default": 140,
                 "firmwareKey": 8
             },
             {
                 "type": "string",
                 "title": "Chain Sag Correction Value for Triangular Kinematics",
-                "desc": "The scaled value computed by the calibration process to calculate chain sag based on sled weight, chain weight, and workspace angle",
+                "desc": "The scaled value computed by the calibration process to calculate chain sag based on sled weight, chain weight, and workspace angle\\ndefault setting: %s",
                 "key": "chainSagCorrection",
                 "default": 0,
                 "firmwareKey": 37
@@ -484,42 +516,6 @@ settings = {
                 "desc": "Zoom scale for 'Reset View' command.",
                 "key": "viewScale",
                 "default": ".45"
-            },
-            {
-                "type": "string",
-                "title": "Run",
-                "desc": "Pressing this key is the same as clicking the 'Start' button. Note combinations of keys like \'shift\' + \'=\' may not work as expected. Program must be restarted to take effect.",
-                "key": "runKey",
-                "default": "r"
-            },
-            {
-                "type": "string",
-                "title": "Pause",
-                "desc": "Pressing this key is the same as clicking the 'Pause' button. Note combinations of keys like \'shift\' + \'=\' may not work as expected. Program must be restarted to take effect.",
-                "key": "pauseKey",
-                "default": "p"
-            },
-            {
-                "type": "string",
-                "title": "Stop",
-                "desc": "Pressing this key is the same as clicking the 'Stop' button. Note upper case or shifted characters or combinations of keys like \'ctrl\' + \'=\' may not work as expected. Program must be restarted to take effect.",
-                "key": "stopKey",
-                "default": "s"
-            },
-            {
-                "type": "options",
-                "title": "FAKE_SERVO allowed",
-                "desc": "Should GroundControl allow FAKE_SERVO mode?",
-                "key": "fsModeAllowed",
-                "options": ["Not allowed", "Allowed"],
-                "default": "Not allowed",
-            },
-            {
-                "type": "string",
-                "title": "FAKE_SERVO Off",
-                "desc": "Pressing this key will turn FAKE_SERVO off. Press this key along with 'cmd', 'alt' , or 'cmd' to turn FAKE_SERVO on. Program must be restarted to take effect.",
-                "key": "fakeServo_Off",
-                "default": "f"
             }
         ],
     "Computed Settings": #These are setting calculated from the user inputs on other settings, they are not directly seen by the user
@@ -639,16 +635,26 @@ def getJSONSettingSection(section):
     This generates a JSON string which is used to construct the Kivy config 
     panel
     '''
+    Opt = []    
     options = []
     if section in settings:
         options = settings[section]
+
     for option in options:
         option['section'] = section
         if 'desc' in option and 'default' in option:
-            if not "default setting:" in option['desc']:                            #check to see if the default text has already been added
+            if not "default setting:" in option['desc']:
                 option['desc'] += "\ndefault setting: " + str(option['default'])
-    return json.dumps(options)
-
+        if 'options' in option:
+            Opt.append(
+            {options: option[options] for options in ['section', 'type', 'title', 'desc', 'key', 'options']})
+        else:
+            Opt.append(
+                {type: option[type] for type in ['section', 'type', 'title', 'desc', 'key']}
+                )   
+    #print(json.dumps(Opt))  
+    return json.dumps(Opt)
+    
 def getDefaultValueSection(section):
     '''
     Returns a dict with the settings keys as the key and the default value 
@@ -686,7 +692,7 @@ def syncFirmwareKey(firmwareKey, value, data):
             if 'firmwareKey' in option and option['firmwareKey'] == firmwareKey:
                 storedValue = data.config.get(section, option['key'])
 
-		if (option['key'] == "spindleAutomate"):
+                if (option['key'] == "spindleAutomate"):
                     if (storedValue == "Servo"):
                         storedValue = 1
                     elif (storedValue == "Relay_High"):

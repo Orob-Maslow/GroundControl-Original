@@ -1,7 +1,7 @@
 from kivy.uix.floatlayout             import    FloatLayout
 from kivy.properties                  import    ObjectProperty
 from kivy.properties                  import    StringProperty
-from UIElements.scrollableLabel       import    ScrollableLabel
+from uielements.scrollableLabel       import    ScrollableLabel
 
 
 class NotificationPopup(FloatLayout):

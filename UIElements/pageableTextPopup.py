@@ -1,7 +1,6 @@
 from kivy.uix.floatlayout             import    FloatLayout
-from kivy.properties                  import    ObjectProperty
-from kivy.properties                  import    StringProperty
-from UIElements.scrollableLabel       import    ScrollableLabel
+from kivy.properties                  import    ObjectProperty, StringProperty
+from uielements.scrollableLabel       import    ScrollableLabel
 
 
 class PageableTextPopup(FloatLayout):

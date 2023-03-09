@@ -7,8 +7,8 @@ from   kivy.uix.gridlayout							import   GridLayout
 from   kivy.properties								import   ObjectProperty
 from   kivy.properties								import   StringProperty
 from   kivy.uix.popup								import   Popup
-from   CalibrationWidgets.setSprocketsVertical		import   SetSprocketsVertical
-from   CalibrationWidgets.measureOutChains			import   MeasureOutChains
+from   calibration_widgets.setSprocketsVertical		import   SetSprocketsVertical
+from   calibration_widgets.measureOutChains			import   MeasureOutChains
 
 class CalibrateLengthsPopup(GridLayout):
     done   = ObjectProperty(None)

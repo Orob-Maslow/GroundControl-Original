@@ -1,22 +1,29 @@
 from kivy.uix.floatlayout                      import  FloatLayout
 from kivy.properties                           import  ListProperty
-from DataStructures.makesmithInitFuncs         import  MakesmithInitFuncs
+from datastructures.makesmithInitFuncs         import  MakesmithInitFuncs
 
 import sys
 import glob
 import serial
 import threading
-import serial.tools.list_ports
+# chose an implementation, depending on os
+if sys.platform.startswith('darwin'):
+     import serial.tools.list_ports_osx
+else:
+    import serial.tools.list_ports
+    
+
+
 
 class ConnectMenu(FloatLayout, MakesmithInitFuncs):
     
     COMports = ListProperty(("Available Ports:", "None"))
     
     def setPort(self, port):
-        print "update ports"
-        print port
+        print ("update ports")
+        print (port)
         self.data.comport = port
-    
+        self.data.config.set('Maslow Settings', 'COMport', str(self.data.comport))
     def connect(self, *args):
         
         self.data.config.set('Maslow Settings', 'COMport', str(self.data.comport))
@@ -39,7 +46,7 @@ class ConnectMenu(FloatLayout, MakesmithInitFuncs):
             sysports = glob.glob('/dev/tty.*')
             for port in sysports:
                 portsList.append(port)
-
+                
         elif sys.platform.startswith('win'):
             for port in self.listSerialPorts():
                 portsList.append(port)
@@ -51,8 +58,7 @@ class ConnectMenu(FloatLayout, MakesmithInitFuncs):
             portsList.append("None")
         
         self.COMports = portsList
-    
-
+        
     def listSerialPorts(self):
         #Detects all the devices connected to the computer. Returns them as an array.
         # import glob
@@ -67,16 +73,4 @@ class ConnectMenu(FloatLayout, MakesmithInitFuncs):
             raise EnvironmentError('Windows port search error')
 
         return ports
-        #result = []
-        #for port in ports:
-        #    try:
-        #        s = serial.Serial(port)
-        #        s.close()
-        #        print ("Port " + port)
-        #        result.append(port)
-        #    except (OSError, serial.SerialException):
-        #        pass
-        #    except (ValueError):
-        #        print("Port find error")
-        #return result
     
